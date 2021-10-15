@@ -1,3 +1,3 @@
 export interface CompleteTaskDTO {
-    _id: string;
+  _id: string;
 }

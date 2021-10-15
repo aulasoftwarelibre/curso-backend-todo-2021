@@ -1,3 +1,3 @@
-export interface RemoveTaskDTO{
-    _id:string;
+export interface RemoveTaskDTO {
+  _id: string;
 }
