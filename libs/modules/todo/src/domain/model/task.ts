@@ -1,5 +1,10 @@
 import { AggregateRoot } from '@aulasoftwarelibre/nestjs-eventstore';
-import { TaskWasCompleted, TaskWasCreated, TaskWasUpdated } from '../event';
+import {
+  TaskWasCompleted,
+  TaskWasCreated,
+  TaskWasUpdated,
+  TaskWasUncompleted,
+} from '../event';
 import { Description } from './description';
 import { TaskId } from './task-id';
 
@@ -15,6 +20,14 @@ export class Task extends AggregateRoot {
     return task;
   }
 
+  public uncompleted() {
+    if (this._isCompleted !== false) {
+      return;
+    }
+
+    this.apply(new TaskWasUncompleted(this._id.value));
+  }
+
   aggregateId(): string {
     return this._id.value;
   }
@@ -28,7 +41,7 @@ export class Task extends AggregateRoot {
   }
 
   public complete(id: TaskId): Task {
-    if(this._isCompleted) {
+    if (this._isCompleted) {
       return;
     }
 
@@ -56,5 +69,9 @@ export class Task extends AggregateRoot {
 
   private onTaskWasUpdated(description: Description): void {
     this._description = Description.withString(description.value);
+  }
+
+  private onTaskWasUncompleted() {
+    this._isCompleted = false;
   }
 }
